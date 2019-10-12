@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var tv_date_now : TextView
     lateinit var et_name : EditText
     lateinit var et_host : EditText
+    lateinit var actv_host : AutoCompleteTextView
     lateinit var et_address : EditText
     lateinit var et_phone_number : EditText
     lateinit var iv_profile_picture : ImageView
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
         tv_date_now = findViewById(R.id.tv_date_now)
         et_name = findViewById(R.id.et_name)
         et_host = findViewById(R.id.et_host)
+        actv_host = findViewById(R.id.actv_host)
         et_address = findViewById(R.id.et_address)
         et_phone_number = findViewById(R.id.et_phone_number)
         iv_profile_picture = findViewById(R.id.iv_profile_picture)
@@ -105,7 +107,15 @@ class MainActivity : AppCompatActivity() {
 
         initDate()
         initVisitorNumber()
+        initAutoCompleteHost()
     }
+
+    private fun initAutoCompleteHost(){
+        val list = arrayListOf("Makan", "Bakpao", "Kolololo", "Ahsiap","Maakan","Maaakan","Maaaakan","Maaaakan","Maaaakan","Maaaakan")
+        actv_host.setAdapter(ArrayAdapter<String>(this@MainActivity,R.layout.my_list_item_1,list))
+
+    }
+
 
     private fun initCamera(){
         val cameraInfo = Camera.CameraInfo()
@@ -171,6 +181,11 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initVisitorNumber(){
         tv_visitor_number.text = "Visitor Number : 222"
+        Handler().postDelayed({
+            runOnUiThread {
+                tv_visitor_number.text = "Visitor Number : 225"
+            }
+        },5000)
     }
     fun initLoadingDialog(){
         loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -198,6 +213,7 @@ class MainActivity : AppCompatActivity() {
 
         et_name.text = null
         et_host.text = null
+        actv_host.text = null
         et_address.text = null
         et_phone_number.text = null
     }
