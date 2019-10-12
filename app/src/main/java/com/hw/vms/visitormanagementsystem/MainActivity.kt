@@ -1,27 +1,20 @@
 package com.hw.vms.visitormanagementsystem
 
 import android.Manifest
-import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.hardware.Camera
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import androidx.appcompat.app.AppCompatActivity
-import java.text.SimpleDateFormat
-import java.util.*
-import android.Manifest.permission
-import android.Manifest.permission.READ_PHONE_STATE
-import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.content.pm.PackageManager
-import android.hardware.Camera
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,11 +43,10 @@ class MainActivity : AppCompatActivity() {
     /***
      * Camera
      */
-    private val pic_id = 123
     var isCameraInitialized : Boolean = false
     var camera : Camera? = null
     lateinit var cameraPreview: CameraPreview
-    lateinit var preview : FrameLayout
+    lateinit var layout_camera : FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,24 +66,38 @@ class MainActivity : AppCompatActivity() {
         iv_profile_picture = findViewById(R.id.iv_profile_picture)
         btn_start_camera = findViewById(R.id.btn_start_camera)
         btn_save = findViewById(R.id.btn_save)
-        preview = findViewById(R.id.layout_camera)
+        layout_camera = findViewById(R.id.layout_camera)
 
         btn_start_camera.setOnClickListener {
-//            val camera_intent = Intent(
-//                MediaStore.ACTION_IMAGE_CAPTURE
-//            )
-//            startActivityForResult(camera_intent, pic_id)
-            camera = Camera.open()
-            cameraPreview = CameraPreview(this,camera!!)
-            preview.addView(cameraPreview)
+
+            val cameraInfo = Camera.CameraInfo()
+            val cameraCount = Camera.getNumberOfCameras()
+            for (camIdx in 0 until cameraCount) {
+                Camera.getCameraInfo(camIdx, cameraInfo)
+                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    try {
+                        initCamera(camIdx)
+                        layout_camera.visibility = View.VISIBLE
+                        iv_profile_picture.visibility = View.GONE
+                    } catch (e: RuntimeException) {
+                    }
+                }
+            }
         }
 
         btn_save.setOnClickListener {
-
+            captureImage()
         }
 
         initDate()
         initVisitorNumber()
+    }
+
+    private fun initCamera(camIdx : Int){
+        camera = Camera.open(camIdx)
+        cameraPreview = CameraPreview(this,camera!!)
+        layout_camera.addView(cameraPreview)
+        isCameraInitialized = true
     }
 
     override fun onResume() {
@@ -99,6 +105,45 @@ class MainActivity : AppCompatActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isPermitted){
             checkPermission()
         }
+        layout_camera.visibility = View.GONE
+        iv_profile_picture.visibility = View.VISIBLE
+    }
+
+    override fun onPause() {
+        isCameraInitialized = false
+        super.onPause()
+    }
+
+    val pictureCallback : Camera.PictureCallback = object : Camera.PictureCallback{
+        override fun onPictureTaken(data: ByteArray?, camera: Camera?) {
+            layout_camera.visibility = View.GONE
+
+            val matrix = Matrix()
+            matrix.preScale(-1.0f,1.0f)
+            val oriBitmap = BitmapFactory.decodeByteArray(data,0,data!!.size)
+            val invertBitmap = Bitmap.createBitmap(oriBitmap,0,0,oriBitmap.width,oriBitmap.height,matrix,true)
+            iv_profile_picture.setImageBitmap(invertBitmap)
+            iv_profile_picture.visibility = View.VISIBLE
+        }
+    }
+
+    private fun captureImage(){
+        if(camera!=null && isCameraInitialized) {
+            try {
+                camera!!.takePicture(null,null,pictureCallback)
+            }catch (e : Exception){}
+        }
+    }
+
+    private fun initDate(){
+        val date = Date()
+        val df = SimpleDateFormat("dd/MM/yyyy")
+        runOnUiThread {
+            tv_date_now.text = "Date : ${df.format(date)}"
+        }
+    }
+    private fun initVisitorNumber(){
+        tv_visitor_number.text = "Visitor Number : 222"
     }
 
 
@@ -124,32 +169,5 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == pic_id) {
-
-            try{
-                // BitMap is data structure of image file
-                // which stor the image in memory
-                val photo = data?.extras?.get("data") as Bitmap
-
-                // Set the image in imageview for display
-                iv_profile_picture.setImageBitmap(photo)
-            }catch (e:Exception){}
-        }
-    }
-
-    private fun initDate(){
-        val date = Date()
-        val df = SimpleDateFormat("dd/MM/yyyy")
-        runOnUiThread {
-            tv_date_now.text = "Date : ${df.format(date)}"
-        }
-    }
-    private fun initVisitorNumber(){
-        tv_visitor_number.text = "Visitor Number : 222"
-    }
-
 
 }

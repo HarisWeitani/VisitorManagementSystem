@@ -20,7 +20,8 @@ class CameraPreview(internal var context: Context,internal var camera : Camera) 
     }
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-
+        camera.stopPreview()
+        camera.release()
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
@@ -30,11 +31,14 @@ class CameraPreview(internal var context: Context,internal var camera : Camera) 
             params.set("orientation","potrait")
             camera.setDisplayOrientation(90)
             params.setRotation(90)
+            params.set("camera-id","2")
         }else{
             params.set("orientation","landscape")
             camera.setDisplayOrientation(0)
             params.setRotation(0)
+            params.set("camera-id","2")
         }
+
         camera.parameters = params
         try{
             camera.setPreviewDisplay(holder)

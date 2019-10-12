@@ -210,17 +210,20 @@
                 >
                 <FrameLayout
                     android:id="@+id/layout_camera"
-                    android:layout_width="300dp"
-                    android:layout_height="300dp">
-                    <ImageView
-                        android:id="@+id/iv_profile_picture"
-                        android:layout_width="300dp"
-                        android:layout_height="300dp"
-                        android:src="@drawable/profile_picture_default"
-                        android:visibility="gone"
-                        />
+                    android:layout_width="280dp"
+                    android:layout_height="210dp"
+                    android:visibility="gone"
+                    >
+
                 </FrameLayout>
 
+                <ImageView
+                    android:id="@+id/iv_profile_picture"
+                    android:layout_width="280dp"
+                    android:layout_height="210dp"
+                    android:src="@drawable/profile_picture_default"
+                    android:background="@color/background_grey"
+                    />
                 <Button
                     android:id="@+id/btn_start_camera"
                     android:layout_width="wrap_content"
@@ -238,7 +241,6 @@
                     android:background="@drawable/button_res"
                     />
             </LinearLayout>
-
 
         </LinearLayout>
 
