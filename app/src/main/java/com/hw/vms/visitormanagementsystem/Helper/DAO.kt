@@ -12,6 +12,5 @@ class DAO {
         /**
          * Not API Object
          */
-
     }
 }

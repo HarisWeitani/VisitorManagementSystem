@@ -10,6 +10,7 @@ import android.hardware.Camera
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -17,6 +18,12 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.hw.rms.roommanagementsystem.Helper.API
+import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,17 +65,28 @@ class MainActivity : AppCompatActivity() {
      */
     var loadingDialog : Dialog? = null
     var thankyouDialog : Dialog? = null
+    var submitFailedDialog : Dialog? = null
+
+    /***
+     * Networking API
+     */
+    var apiService : API? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        apiService = API.networkApi()
+
         initView()
+
         loadingDialog = Dialog(this@MainActivity)
         thankyouDialog = Dialog(this@MainActivity)
+        submitFailedDialog = Dialog(this@MainActivity)
         initLoadingDialog()
         initThankYouDialog()
+        initSubmitFailed()
     }
 
     private fun initView(){
@@ -99,10 +117,7 @@ class MainActivity : AppCompatActivity() {
 
         btn_save.setOnClickListener {
             loadingDialog?.show()
-            Handler().postDelayed({
-                loadingDialog?.dismiss()
-                showThankYouDialog()
-            },1500)
+            submit()
         }
 
         initDate()
@@ -113,9 +128,7 @@ class MainActivity : AppCompatActivity() {
     private fun initAutoCompleteHost(){
         val list = arrayListOf("Makan", "Bakpao", "Kolololo", "Ahsiap","Maakan","Maaakan","Maaaakan","Maaaakan","Maaaakan","Maaaakan")
         actv_host.setAdapter(ArrayAdapter<String>(this@MainActivity,R.layout.my_list_item_1,list))
-
     }
-
 
     private fun initCamera(){
         val cameraInfo = Camera.CameraInfo()
@@ -197,11 +210,22 @@ class MainActivity : AppCompatActivity() {
         thankyouDialog?.setCancelable(true)
         thankyouDialog?.setContentView(R.layout.thankyou_dialog)
     }
+    fun initSubmitFailed(){
+        submitFailedDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        submitFailedDialog?.setCancelable(true)
+        submitFailedDialog?.setContentView(R.layout.submit_failed_dialog)
+    }
     fun showThankYouDialog(){
         thankyouDialog?.show()
         resetUI()
         Handler().postDelayed({
             thankyouDialog?.dismiss()
+        },1500)
+    }
+    fun showSubmitFailedDialog(){
+        submitFailedDialog?.show()
+        Handler().postDelayed({
+            submitFailedDialog?.dismiss()
         },1500)
     }
 
@@ -218,8 +242,22 @@ class MainActivity : AppCompatActivity() {
         et_phone_number.text = null
     }
 
-    private fun checkPermission() {
+    private fun submit(){
+        apiService!!.testingAPI().enqueue(object : Callback<ResponseBody>{
+            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
+                loadingDialog?.dismiss()
+                showSubmitFailedDialog()
+            }
+            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
+                loadingDialog?.dismiss()
+                showThankYouDialog()
+            }
+        })
+    }
 
+    private fun checkPermission() {
         var internet = false
         var camera = false
 

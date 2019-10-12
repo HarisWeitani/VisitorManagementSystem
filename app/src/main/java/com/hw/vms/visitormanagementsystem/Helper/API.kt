@@ -3,23 +3,27 @@ package com.hw.rms.roommanagementsystem.Helper
 import android.util.Log
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.GET
 import java.net.Socket
 import java.util.concurrent.TimeUnit
 
 interface API {
 
+    @GET("/200?sleep=2000")
+    fun testingAPI() : Call<ResponseBody>
+
     companion object Factory{
 
 //        http://139.180.142.76/room_management_system
 
-        var serverUrl : String? = null
-
-        lateinit var socket : Socket
+        var serverUrl : String? = "https://httpstat.us"
 
         fun networkApi() : API{
             val gson = GsonBuilder()
