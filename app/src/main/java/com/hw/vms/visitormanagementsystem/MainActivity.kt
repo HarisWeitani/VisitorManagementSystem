@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         initDate()
+        initVisitorNumber()
     }
 
     private fun initDate(){
@@ -59,6 +60,9 @@ class MainActivity : AppCompatActivity() {
         runOnUiThread {
             tv_date_now.text = "Date : ${df.format(date)}"
         }
+    }
+    private fun initVisitorNumber(){
+        tv_visitor_number.text = "Visitor Number : 222"
     }
 
 }
