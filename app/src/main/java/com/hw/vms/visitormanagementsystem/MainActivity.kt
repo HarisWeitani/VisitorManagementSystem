@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.crashlytics.android.Crashlytics
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,6 +50,15 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        initDate()
+    }
+
+    private fun initDate(){
+        val date = Date()
+        val df = SimpleDateFormat("dd/MM/yyyy")
+        runOnUiThread {
+            tv_date_now.text = "Date : ${df.format(date)}"
+        }
     }
 
 }
