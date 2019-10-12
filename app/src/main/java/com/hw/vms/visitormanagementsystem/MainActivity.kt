@@ -69,35 +69,42 @@ class MainActivity : AppCompatActivity() {
         layout_camera = findViewById(R.id.layout_camera)
 
         btn_start_camera.setOnClickListener {
-
-            val cameraInfo = Camera.CameraInfo()
-            val cameraCount = Camera.getNumberOfCameras()
-            for (camIdx in 0 until cameraCount) {
-                Camera.getCameraInfo(camIdx, cameraInfo)
-                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                    try {
-                        initCamera(camIdx)
-                        layout_camera.visibility = View.VISIBLE
-                        iv_profile_picture.visibility = View.GONE
-                    } catch (e: RuntimeException) {
-                    }
-                }
+            if(isCameraInitialized) {
+                captureImage()
+            }else{
+                initCamera()
             }
         }
 
+        iv_profile_picture.setOnClickListener {
+            initCamera()
+        }
+
         btn_save.setOnClickListener {
-            captureImage()
+
         }
 
         initDate()
         initVisitorNumber()
     }
 
-    private fun initCamera(camIdx : Int){
-        camera = Camera.open(camIdx)
-        cameraPreview = CameraPreview(this,camera!!)
-        layout_camera.addView(cameraPreview)
-        isCameraInitialized = true
+    private fun initCamera(){
+        val cameraInfo = Camera.CameraInfo()
+        val cameraCount = Camera.getNumberOfCameras()
+        for (camIdx in 0 until cameraCount) {
+            Camera.getCameraInfo(camIdx, cameraInfo)
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    camera = Camera.open(camIdx)
+                    cameraPreview = CameraPreview(this,camera!!)
+                    layout_camera.addView(cameraPreview)
+                    isCameraInitialized = true
+                    layout_camera.visibility = View.VISIBLE
+                    iv_profile_picture.visibility = View.GONE
+                } catch (e: RuntimeException) {
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -131,6 +138,7 @@ class MainActivity : AppCompatActivity() {
         if(camera!=null && isCameraInitialized) {
             try {
                 camera!!.takePicture(null,null,pictureCallback)
+                isCameraInitialized = false
             }catch (e : Exception){}
         }
     }

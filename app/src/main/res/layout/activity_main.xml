@@ -221,7 +221,7 @@
                     android:id="@+id/iv_profile_picture"
                     android:layout_width="280dp"
                     android:layout_height="210dp"
-                    android:src="@drawable/profile_picture_default"
+                    android:src="@drawable/profile_picture_default_transparent"
                     android:background="@color/background_grey"
                     />
                 <Button
@@ -232,7 +232,7 @@
                     android:paddingEnd="16dp"
                     android:layout_marginStart="16dp"
 
-                    android:text="Start Camera"
+                    android:text="Camera"
                     android:textSize="20sp"
                     android:textColor="@color/background_grey"
 
