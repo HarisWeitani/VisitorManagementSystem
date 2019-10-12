@@ -1,6 +1,7 @@
 package com.hw.vms.visitormanagementsystem
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -8,7 +9,10 @@ import android.graphics.Matrix
 import android.hardware.Camera
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -48,11 +52,22 @@ class MainActivity : AppCompatActivity() {
     lateinit var cameraPreview: CameraPreview
     lateinit var layout_camera : FrameLayout
 
+    /***
+     * Loading
+     */
+    var loadingDialog : Dialog? = null
+    var thankyouDialog : Dialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         initView()
+        loadingDialog = Dialog(this@MainActivity)
+        thankyouDialog = Dialog(this@MainActivity)
+        initLoadingDialog()
+        initThankYouDialog()
     }
 
     private fun initView(){
@@ -81,7 +96,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_save.setOnClickListener {
-
+            loadingDialog?.show()
+            Handler().postDelayed({
+                loadingDialog?.dismiss()
+                showThankYouDialog()
+            },1500)
         }
 
         initDate()
@@ -153,7 +172,35 @@ class MainActivity : AppCompatActivity() {
     private fun initVisitorNumber(){
         tv_visitor_number.text = "Visitor Number : 222"
     }
+    fun initLoadingDialog(){
+        loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        loadingDialog?.setCancelable(false)
+        loadingDialog?.setContentView(R.layout.loading_dialog)
+    }
+    fun initThankYouDialog(){
+        thankyouDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        thankyouDialog?.setCancelable(true)
+        thankyouDialog?.setContentView(R.layout.thankyou_dialog)
+    }
+    fun showThankYouDialog(){
+        thankyouDialog?.show()
+        resetUI()
+        Handler().postDelayed({
+            thankyouDialog?.dismiss()
+        },1500)
+    }
 
+    private fun resetUI(){
+        isCameraInitialized = false
+        layout_camera.visibility = View.GONE
+        iv_profile_picture.visibility = View.VISIBLE
+        iv_profile_picture.setImageResource(R.drawable.profile_picture_default_transparent)
+
+        et_name.text = null
+        et_host.text = null
+        et_address.text = null
+        et_phone_number.text = null
+    }
 
     private fun checkPermission() {
 
