@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/black"
+    tools:context=".AdminSettingActivity">
+
+    <LinearLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal"
+        android:layout_margin="16dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="32dp"
+            >
+            <Button
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_arrow_back_white_24dp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Setting"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/gotham_black"
+                />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:gravity="end"
+            android:text="06 August 2019"
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/gotham_book"
+            />
+
+        <TextView
+            android:id="@+id/tv_clock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center"
+            android:text="12:12"
+            android:textSize="50sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/gotham_light"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="64dp"
+
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:paddingTop="32dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+
+            android:orientation="vertical"
+            android:background="@color/setting_grey"
+
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Setting"
+                android:fontFamily="@font/gotham_bold"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+
+                android:text="This page allows you to change configuration for the system"
+                android:fontFamily="@font/gotham_book"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+
+                android:text="_________________"
+                android:fontFamily="@font/gotham_book"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                />
+
+            <TextView
+                android:id="@+id/tv_socket_connection_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+
+                android:text="Socket Is "
+                android:fontFamily="@font/gotham_book"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+
+                android:visibility="gone"
+                />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="32dp"
+            android:layout_weight="1"
+            android:background="@color/setting_grey"
+
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:orientation="vertical"
+
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+
+                    android:text="Setting Pin"
+                    android:textSize="25sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/gotham_bold"
+                    />
+
+                <EditText
+                    android:id="@+id/et_change_admin_pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:background="@drawable/edit_text_box"
+
+                    android:textColor="@color/white"
+                    android:hint="4 Digits"
+                    android:maxLength="4"
+                    android:inputType="number"
+                    android:fontFamily="@font/gotham_book"
+                    />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:text="Server URL"
+                    android:textSize="25sp"
+                    android:textColor="@color/white"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    android:layout_marginBottom="16dp"
+                    >
+                    <Spinner
+                        android:id="@+id/spinner_server"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/edit_text_box"
+                        android:textColor="@color/white"
+
+                        android:layout_marginEnd="16dp"
+                        />
+
+                    <EditText
+                        android:id="@+id/et_server_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/edit_text_box"
+                        android:textColor="@color/white"
+                        android:hint="Server URL"
+                        />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_try_serverconn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_connection_server"
+                    android:layout_marginBottom="32dp"
+                    />
+
+                <Button
+                    android:id="@+id/btn_save_and_exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="70dp"
+                    android:layout_gravity="center"
+                    android:text="Save And Exit"
+                    />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

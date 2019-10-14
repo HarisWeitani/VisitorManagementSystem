@@ -2,6 +2,7 @@ package com.hw.vms.visitormanagementsystem
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,8 +19,12 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
+import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
+import com.hw.vms.visitormanagementsystem.Helper.SettingsData
+import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -72,15 +77,22 @@ class MainActivity : AppCompatActivity() {
      */
     var apiService : API? = null
 
+    var firstInstall : Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+        val sharepref = SharedPreference(this)
+        firstInstall = sharepref.getValueBoolean(GlobalVal.FRESH_INSTALL_KEY,true)
+        DAO.settingsData = Gson().fromJson(sharepref.getValueString(GlobalVal.SETTINGS_DATA_KEY), SettingsData::class.java)
+
+    }
+
+    private fun initApp(){
         apiService = API.networkApi()
-
         initView()
-
         loadingDialog = Dialog(this@MainActivity)
         thankyouDialog = Dialog(this@MainActivity)
         submitFailedDialog = Dialog(this@MainActivity)
@@ -154,6 +166,16 @@ class MainActivity : AppCompatActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isPermitted){
             checkPermission()
         }
+        else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            isPermitted = true
+        }
+
+        if(firstInstall){
+            startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+        }else if (isPermitted){
+            initApp()
+        }
+
         layout_camera.visibility = View.GONE
         iv_profile_picture.visibility = View.VISIBLE
     }
