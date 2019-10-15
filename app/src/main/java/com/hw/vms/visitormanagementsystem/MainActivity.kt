@@ -22,13 +22,18 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
 import com.hw.vms.visitormanagementsystem.Helper.SettingsData
 import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,6 +69,7 @@ class MainActivity : AppCompatActivity() {
     var camera : Camera? = null
     lateinit var cameraPreview: CameraPreview
     lateinit var layout_camera : FrameLayout
+    var imagePhoto : Bitmap? = null
 
     /***
      * Loading
@@ -76,7 +82,6 @@ class MainActivity : AppCompatActivity() {
      * Networking API
      */
     var apiService : API? = null
-
     var firstInstall : Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,7 +174,7 @@ class MainActivity : AppCompatActivity() {
         else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             isPermitted = true
         }
-
+        firstInstall = false
         if(firstInstall){
             startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }else if (isPermitted){
@@ -193,6 +198,8 @@ class MainActivity : AppCompatActivity() {
             matrix.preScale(-1.0f,1.0f)
             val oriBitmap = BitmapFactory.decodeByteArray(data,0,data!!.size)
             val invertBitmap = Bitmap.createBitmap(oriBitmap,0,0,oriBitmap.width,oriBitmap.height,matrix,true)
+            imagePhoto = invertBitmap
+
             iv_profile_picture.setImageBitmap(invertBitmap)
             iv_profile_picture.visibility = View.VISIBLE
         }
@@ -265,18 +272,67 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun submit(){
-        apiService!!.testingAPI().enqueue(object : Callback<ResponseBody>{
-            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+
+        var host_id = RequestBody.create(MediaType.parse("text/plain"), "1")
+        var guest_name = RequestBody.create(MediaType.parse("text/plain"), "TEH HIJAU")
+        var guest_phone = RequestBody.create(MediaType.parse("text/plain"), "123456")
+        var guest_company = RequestBody.create(MediaType.parse("text/plain"), "TEH SAVANA")
+        var guest_address = RequestBody.create(MediaType.parse("text/plain"), "Laut Dalam")
+        var guest_image = RequestBody.create(MediaType.parse("image/*"), convertBitmapToFile())
+
+        val requestBodyMap = HashMap<String, RequestBody>()
+        requestBodyMap["host_id"] = host_id
+        requestBodyMap["guest_name"] = guest_name
+        requestBodyMap["guest_phone"] = guest_phone
+        requestBodyMap["guest_company"] = guest_company
+        requestBodyMap["guest_address"] = guest_address
+
+        val image_body = MultipartBody.Part.createFormData("guest_image","guest_image.jpeg",guest_image)
+
+        apiService!!.booking(requestBodyMap, image_body).enqueue(object : Callback<ResponseBooking>{
+            override fun onFailure(call: Call<ResponseBooking>?, t: Throwable?) {
                 Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
                 loadingDialog?.dismiss()
                 showSubmitFailedDialog()
             }
-            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+
+            override fun onResponse(
+                call: Call<ResponseBooking>?,
+                response: Response<ResponseBooking>?
+            ) {
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
                 loadingDialog?.dismiss()
                 showThankYouDialog()
             }
+
         })
+    }
+
+    private fun convertBitmapToFile() : File{
+        val f = File(this.cacheDir, "guest_image.jpeg")
+        f.createNewFile()
+
+        //Convert bitmap to byte array
+        val bitmap = imagePhoto
+        val bos = ByteArrayOutputStream()
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, bos)
+        val bitmapdata = bos.toByteArray()
+
+        //write the bytes in file
+        var fos : FileOutputStream? = null
+        try {
+            fos = FileOutputStream(f)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        try {
+            fos!!.write(bitmapdata)
+            fos.flush()
+            fos.close()
+        } catch (e : IOException) {
+            e.printStackTrace()
+        }
+        return f
     }
 
     private fun checkPermission() {

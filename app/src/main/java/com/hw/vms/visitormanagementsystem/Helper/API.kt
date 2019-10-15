@@ -2,7 +2,12 @@ package com.hw.rms.roommanagementsystem.Helper
 
 import android.util.Log
 import com.google.gson.GsonBuilder
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONObject
@@ -10,20 +15,29 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 import java.net.Socket
 import java.util.concurrent.TimeUnit
 
 interface API {
 
-    @GET("/200?sleep=2000")
-    fun testingAPI() : Call<ResponseBody>
+    @GET("/vms/api/host/get_host")
+    fun getAllHost() : Call<ResponseGetHost>
+
+    @Multipart
+    @POST("/vms/api/booking/visitor_number")
+    fun getVisitorNumber(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>) : Call<ResponseGetVisitorNumber>
+
+    @Multipart
+    @POST("/vms/api/booking/")
+    fun booking(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>, @Part image : MultipartBody.Part) : Call<ResponseBooking>
 
     companion object Factory{
 
 //        http://139.180.142.76/room_management_system
 
-        var serverUrl : String? = "https://httpstat.us"
+//        var serverUrl : String? = DAO.settingsData?.server_full_url
+        var serverUrl : String? = "http://139.180.142.76"
 
         fun networkApi() : API{
             val gson = GsonBuilder()
