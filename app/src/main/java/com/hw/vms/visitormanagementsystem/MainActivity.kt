@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
             actv_host.setOnItemClickListener { parent, view, position, id ->
-
+                Log.d("ahsiap","asdas")
             }
         }catch (e:Exception){}
     }
