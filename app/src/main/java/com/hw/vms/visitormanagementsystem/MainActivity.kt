@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
+import com.hw.vms.visitormanagementsystem.Adapter.HostAdapter
+import com.hw.vms.visitormanagementsystem.DataSet.DataHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
 import com.hw.vms.visitormanagementsystem.Helper.SettingsData
@@ -137,14 +139,28 @@ class MainActivity : AppCompatActivity() {
             submit()
         }
 
+        iv_logo.setOnLongClickListener {
+            startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            true
+        }
+
         initDate()
         initVisitorNumber()
         initAutoCompleteHost()
     }
 
     private fun initAutoCompleteHost(){
-        val list = arrayListOf("Makan", "Bakpao", "Kolololo", "Ahsiap","Maakan","Maaakan","Maaaakan","Maaaakan","Maaaakan","Maaaakan")
-        actv_host.setAdapter(ArrayAdapter<String>(this@MainActivity,R.layout.my_list_item_1,list))
+        try {
+            actv_host.setAdapter(
+                HostAdapter(
+                    this, R.layout.my_list_item_1,
+                    DAO.responseGetHost?.data as List<DataHost>
+                )
+            )
+            actv_host.setOnItemClickListener { parent, view, position, id ->
+
+            }
+        }catch (e:Exception){}
     }
 
     private fun initCamera(){
@@ -174,15 +190,14 @@ class MainActivity : AppCompatActivity() {
         else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             isPermitted = true
         }
-        firstInstall = false
         if(firstInstall){
             startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }else if (isPermitted){
             initApp()
-        }
 
-        layout_camera.visibility = View.GONE
-        iv_profile_picture.visibility = View.VISIBLE
+            layout_camera.visibility = View.GONE
+            iv_profile_picture.visibility = View.VISIBLE
+        }
     }
 
     override fun onPause() {
@@ -222,12 +237,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun initVisitorNumber(){
-        tv_visitor_number.text = "Visitor Number : 222"
-        Handler().postDelayed({
-            runOnUiThread {
-                tv_visitor_number.text = "Visitor Number : 225"
-            }
-        },5000)
+        var res = 0
+        try {
+            res = DAO.responseGetVisitorNumber?.visitor_number!!
+        }catch (e:Exception){}
+        tv_visitor_number.text = "Visitor Number : $res"
     }
     fun initLoadingDialog(){
         loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -301,8 +315,13 @@ class MainActivity : AppCompatActivity() {
                 response: Response<ResponseBooking>?
             ) {
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
-                loadingDialog?.dismiss()
-                showThankYouDialog()
+                if( response?.code() == 200 && response.body() != null ) {
+                    loadingDialog?.dismiss()
+                    showThankYouDialog()
+                }else{
+                    loadingDialog?.dismiss()
+                    showSubmitFailedDialog()
+                }
             }
 
         })

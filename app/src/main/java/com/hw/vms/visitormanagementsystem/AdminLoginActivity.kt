@@ -28,8 +28,7 @@ class AdminLoginActivity : AppCompatActivity() {
         et_admin_pin = findViewById(R.id.et_admin_pin)
         btnBack = findViewById(R.id.btnBack)
 
-//        var pinNow = DAO.settingsData?.admin_pin
-        var pinNow = "2222"
+        var pinNow = DAO.settingsData?.admin_pin
         if( pinNow == null ) pinNow = "1111"
 
         et_admin_pin.addTextChangedListener(object : TextWatcher {

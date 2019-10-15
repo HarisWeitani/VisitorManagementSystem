@@ -4,16 +4,21 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
 import com.hw.vms.visitormanagementsystem.Helper.SettingsData
 import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
 import kotlinx.android.synthetic.main.activity_admin_setting.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -147,26 +152,55 @@ class AdminSettingActivity : AppCompatActivity() {
             btn_try_serverconn.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.status_yellow))
         }
         apiService = API.networkApi()
-/*        apiService!!.getConfigData().enqueue(object : Callback<ResponseConfig> {
-            override fun onFailure(call: Call<ResponseConfig>?, t: Throwable?) {
-                GlobalVal.networkLogging("connectServer onFailure",t.toString())
-                runOnUiThread {
-                    btn_try_serverconn.text = getString(R.string.failed)
-                    btn_try_serverconn.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.status_red))
-                    Toast.makeText(this@AdminSettingActivity,"Connection Failed Please Try Again", Toast.LENGTH_LONG).show()
-                }
+        apiService!!.getAllHost().enqueue(object : Callback<ResponseGetHost> {
+            override fun onFailure(call: Call<ResponseGetHost>?, t: Throwable?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
+                serverFailed()
                 serverConnected = false
             }
-            override fun onResponse(call: Call<ResponseConfig>?, response: Response<ResponseConfig>?) {
-                GlobalVal.networkLogging("connectServer onResponse",response?.body().toString())
+            override fun onResponse(call: Call<ResponseGetHost>?, response: Response<ResponseGetHost>?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
                 if( response?.code() == 200 && response.body() != null ){
-                    DAO.configData = response.body()
-                    getBuildingList()
+                    DAO.responseGetHost = response.body()
+                    getVisitorNumber()
                 }else{
+                    serverFailed()
                     serverConnected = false
                 }
             }
-        })*/
+        })
+    }
+    private fun getVisitorNumber(){
+        val date = Date()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var current_date = RequestBody.create(MediaType.parse("text/plain"), dateFormat.format(date))
+
+        val requestBodyMap = HashMap<String, RequestBody>()
+        requestBodyMap["current_date"] = current_date
+
+        apiService!!.getVisitorNumber(requestBodyMap).enqueue(object : Callback<ResponseGetVisitorNumber>{
+            override fun onFailure(call: Call<ResponseGetVisitorNumber>?, t: Throwable?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
+                serverFailed()
+                serverConnected = false
+            }
+
+            override fun onResponse(
+                call: Call<ResponseGetVisitorNumber>?,
+                response: Response<ResponseGetVisitorNumber>?
+            ) {
+                Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
+                if( response?.code() == 200 && response.body() != null ){
+                    DAO.responseGetVisitorNumber = response.body()
+                    serverConnected()
+                    serverConnected = true
+                }else{
+                    serverFailed()
+                    serverConnected = false
+                }
+            }
+
+        })
     }
     private fun serverConnected(){
         runOnUiThread {
@@ -174,6 +208,13 @@ class AdminSettingActivity : AppCompatActivity() {
             btn_try_serverconn.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.status_green))
             btn_save_and_exit.visibility = View.VISIBLE
             et_server_url.isEnabled = false
+        }
+    }
+    private fun serverFailed(){
+        runOnUiThread {
+            btn_try_serverconn.text = getString(R.string.failed)
+            btn_try_serverconn.setBackgroundColor(ContextCompat.getColor(applicationContext,R.color.status_red))
+            Toast.makeText(this@AdminSettingActivity,"Connection Failed Please Try Again", Toast.LENGTH_LONG).show()
         }
     }
 

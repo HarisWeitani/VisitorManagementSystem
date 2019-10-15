@@ -21,23 +21,23 @@ import java.util.concurrent.TimeUnit
 
 interface API {
 
-    @GET("/vms/api/host/get_host")
+    @GET("api/host/get_host")
     fun getAllHost() : Call<ResponseGetHost>
 
     @Multipart
-    @POST("/vms/api/booking/visitor_number")
+    @POST("api/booking/visitor_number")
     fun getVisitorNumber(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>) : Call<ResponseGetVisitorNumber>
 
     @Multipart
-    @POST("/vms/api/booking/")
+    @POST("api/booking/")
     fun booking(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>, @Part image : MultipartBody.Part) : Call<ResponseBooking>
 
     companion object Factory{
 
 //        http://139.180.142.76/room_management_system
 
-//        var serverUrl : String? = DAO.settingsData?.server_full_url
-        var serverUrl : String? = "http://139.180.142.76"
+        var serverUrl : String? = DAO.settingsData?.server_full_url
+//        var serverUrl : String? = "http://139.180.142.76/vms"
 
         fun networkApi() : API{
             val gson = GsonBuilder()
