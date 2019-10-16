@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
      * Networking API
      */
     var apiService : API? = null
-    var isGetVisitorSuccess : Boolean = false
-    var isGetBoothSuccess : Boolean = false
+    var isGetVisitorFinished : Boolean = false
+    var isGetHostFinished : Boolean = false
     var firstInstall : Boolean = true
 
 
@@ -282,13 +282,13 @@ class MainActivity : AppCompatActivity() {
         resetUI()
         Handler().postDelayed({
             thankyouDialog?.dismiss()
-        },1500)
+        },2000)
     }
     fun showSubmitFailedDialog(){
         submitFailedDialog?.show()
         Handler().postDelayed({
             submitFailedDialog?.dismiss()
-        },1500)
+        },3000)
     }
 
     private fun resetUI(){
@@ -366,6 +366,7 @@ class MainActivity : AppCompatActivity() {
                 if( response?.code() == 200 && response.body() != null ) {
                     loadingDialog?.dismiss()
                     showThankYouDialog()
+                    getVisitorNumber()
                 }else{
                     loadingDialog?.dismiss()
                     showSubmitFailedDialog()
@@ -431,8 +432,8 @@ class MainActivity : AppCompatActivity() {
     private fun refreshData(){
 
         Handler().postDelayed({
-            Log.d(GlobalVal.NETWORK_TAG,"Refresh Data")
-            if(isGetVisitorSuccess && isGetBoothSuccess) {
+            Log.d(GlobalVal.NETWORK_TAG,"Refresh Data $isGetVisitorFinished - $isGetHostFinished")
+            if(isGetVisitorFinished && isGetHostFinished) {
                 Log.d(GlobalVal.NETWORK_TAG,"Refresh Data Start")
                 getVisitorNumber()
                 getAllHost()
@@ -443,6 +444,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getVisitorNumber(){
+        isGetVisitorFinished = false
+
         val date = Date()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd")
         var current_date = RequestBody.create(MediaType.parse("text/plain"), dateFormat.format(date))
@@ -452,22 +455,21 @@ class MainActivity : AppCompatActivity() {
 
         apiService!!.getVisitorNumber(requestBodyMap).enqueue(object : Callback<ResponseGetVisitorNumber>{
             override fun onFailure(call: Call<ResponseGetVisitorNumber>?, t: Throwable?) {
+                isGetVisitorFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onFailure getVisitorNumber "+t.toString())
                 Toast.makeText(this@MainActivity,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
-                isGetVisitorSuccess = false
             }
 
             override fun onResponse(
                 call: Call<ResponseGetVisitorNumber>?,
                 response: Response<ResponseGetVisitorNumber>?
             ) {
+                isGetVisitorFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse getVisitorNumber "+response.toString())
                 if( response?.code() == 200 && response.body() != null ){
                     DAO.responseGetVisitorNumber = response.body()
                     initVisitorNumber()
-                    isGetVisitorSuccess = true
                 }else{
-                    isGetVisitorSuccess = false
                     Toast.makeText(this@MainActivity,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -476,22 +478,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getAllHost(){
+
+        isGetHostFinished = false
+
         apiService!!.getAllHost().enqueue(object : Callback<ResponseGetHost> {
             override fun onFailure(call: Call<ResponseGetHost>?, t: Throwable?) {
+                isGetHostFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onFailure getAllHost "+t.toString())
                 Toast.makeText(this@MainActivity,"Get New Host Failed", Toast.LENGTH_SHORT).show()
-                isGetBoothSuccess = false
             }
             override fun onResponse(call: Call<ResponseGetHost>?, response: Response<ResponseGetHost>?) {
+                isGetHostFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse getAllHost "+response.toString())
                 if( response?.code() == 200 && response.body() != null ){
                     DAO.responseGetHost = response.body()
                     initAutoCompleteHost()
                     actv_host.isEnabled = true
-                    isGetBoothSuccess = true
                 }else{
                     Toast.makeText(this@MainActivity,"Get New Host Failed", Toast.LENGTH_SHORT).show()
-                    isGetBoothSuccess = false
                 }
             }
         })
