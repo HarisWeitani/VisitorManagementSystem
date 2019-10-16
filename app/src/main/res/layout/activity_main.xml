@@ -102,6 +102,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
 
+                android:inputType="text"
                 android:hint="Enter Name"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"
@@ -138,6 +139,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
 
+                android:inputType="text"
                 android:hint="Enter Host"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"
@@ -160,6 +162,7 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
 
+                android:inputType="text"
                 android:hint="Enter Address"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"

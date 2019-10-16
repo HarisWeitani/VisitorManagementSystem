@@ -104,7 +104,7 @@ class AdminSettingActivity : AppCompatActivity() {
     }
     private fun initButtonListener(){
         btnBack.setOnClickListener {
-            startActivity(Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }
         btn_try_serverconn.setOnClickListener {
             if( et_server_url.text.length > 10 ){
@@ -139,9 +139,7 @@ class AdminSettingActivity : AppCompatActivity() {
             sharePref!!.save(GlobalVal.FRESH_INSTALL_KEY, false)
             sharePref!!.save(GlobalVal.SETTINGS_DATA_KEY, settingDataJson)
             startActivity(
-                Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(
-                    Intent.FLAG_ACTIVITY_SINGLE_TOP
-                )
+                Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             )
         }
 

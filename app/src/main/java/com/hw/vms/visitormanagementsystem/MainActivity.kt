@@ -25,13 +25,14 @@ import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Adapter.HostAdapter
 import com.hw.vms.visitormanagementsystem.DataSet.DataHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
 import com.hw.vms.visitormanagementsystem.Helper.SettingsData
 import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     var camera : Camera? = null
     lateinit var cameraPreview: CameraPreview
     lateinit var layout_camera : FrameLayout
-    var imagePhoto : Bitmap? = null
+    var imagePhotoBitmap : Bitmap? = null
 
     /***
      * Loading
@@ -84,7 +85,11 @@ class MainActivity : AppCompatActivity() {
      * Networking API
      */
     var apiService : API? = null
+    var isGetVisitorSuccess : Boolean = false
+    var isGetBoothSuccess : Boolean = false
     var firstInstall : Boolean = true
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +111,9 @@ class MainActivity : AppCompatActivity() {
         initLoadingDialog()
         initThankYouDialog()
         initSubmitFailed()
+        getVisitorNumber()
+        getAllHost()
+        refreshData()
     }
 
     private fun initView(){
@@ -135,13 +143,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_save.setOnClickListener {
-            loadingDialog?.show()
-            submit()
+
+            if( validateData() ) {
+                loadingDialog?.show()
+                submit()
+            }
+            else{
+                Toast.makeText(this@MainActivity,"Mohon Isi Semua Data", Toast.LENGTH_LONG).show()
+            }
         }
 
         iv_logo.setOnLongClickListener {
             startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
             true
+        }
+
+        actv_host.isEnabled = DAO.responseGetHost != null
+
+        actv_host.setOnItemClickListener { parent, view, position, id ->
+            Log.d("ahsiap","asdas $id")
+            hostId = id.toString()
         }
 
         initDate()
@@ -157,9 +178,7 @@ class MainActivity : AppCompatActivity() {
                     DAO.responseGetHost?.data as List<DataHost>
                 )
             )
-            actv_host.setOnItemClickListener { parent, view, position, id ->
-                Log.d("ahsiap","asdas")
-            }
+            actv_host.isEnabled = DAO.responseGetHost != null
         }catch (e:Exception){}
     }
 
@@ -213,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             matrix.preScale(-1.0f,1.0f)
             val oriBitmap = BitmapFactory.decodeByteArray(data,0,data!!.size)
             val invertBitmap = Bitmap.createBitmap(oriBitmap,0,0,oriBitmap.width,oriBitmap.height,matrix,true)
-            imagePhoto = invertBitmap
+            imagePhotoBitmap = invertBitmap
 
             iv_profile_picture.setImageBitmap(invertBitmap)
             iv_profile_picture.visibility = View.VISIBLE
@@ -285,14 +304,43 @@ class MainActivity : AppCompatActivity() {
         et_phone_number.text = null
     }
 
+    var hostId : String? = null
+    var guestName : String? = null
+    var guestPhone : String? = null
+    var guestCompany : String? = null
+    var guestAddress : String? = null
+    var guestImage : File? = null
+
+    private fun validateData() : Boolean{
+        getInputUser()
+        return ( !hostId.isNullOrEmpty() &&
+                !guestName.isNullOrEmpty() &&
+                !guestPhone.isNullOrEmpty() &&
+                !guestCompany.isNullOrEmpty() &&
+                !guestAddress.isNullOrEmpty() &&
+                guestImage != null
+                )
+    }
+
+    private fun getInputUser(){
+        guestName = et_name.text.toString()
+        guestPhone = et_phone_number.text.toString()
+        guestCompany = " "
+        guestAddress = et_address.text.toString()
+        if(imagePhotoBitmap!=null) {
+            guestImage = convertBitmapToFile()
+        }
+    }
+
     private fun submit(){
 
-        var host_id = RequestBody.create(MediaType.parse("text/plain"), "1")
-        var guest_name = RequestBody.create(MediaType.parse("text/plain"), "TEH HIJAU")
-        var guest_phone = RequestBody.create(MediaType.parse("text/plain"), "123456")
-        var guest_company = RequestBody.create(MediaType.parse("text/plain"), "TEH SAVANA")
-        var guest_address = RequestBody.create(MediaType.parse("text/plain"), "Laut Dalam")
-        var guest_image = RequestBody.create(MediaType.parse("image/*"), convertBitmapToFile())
+        var host_id = RequestBody.create(MediaType.parse("text/plain"), hostId)
+        var guest_name = RequestBody.create(MediaType.parse("text/plain"), guestName)
+        var guest_phone = RequestBody.create(MediaType.parse("text/plain"), guestPhone)
+        var guest_company = RequestBody.create(MediaType.parse("text/plain"), guestCompany)
+        var guest_address = RequestBody.create(MediaType.parse("text/plain"), guestAddress)
+        var guest_image = RequestBody.create(MediaType.parse("image/*"), guestImage)
+//        var guest_image = RequestBody.create(MediaType.parse("image/*"), convertBitmapToFile())
 
         val requestBodyMap = HashMap<String, RequestBody>()
         requestBodyMap["host_id"] = host_id
@@ -332,7 +380,7 @@ class MainActivity : AppCompatActivity() {
         f.createNewFile()
 
         //Convert bitmap to byte array
-        val bitmap = imagePhoto
+        val bitmap = imagePhotoBitmap
         val bos = ByteArrayOutputStream()
         bitmap?.compress(Bitmap.CompressFormat.JPEG, 50, bos)
         val bitmapdata = bos.toByteArray()
@@ -376,4 +424,76 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /***
+     * Get Data Every 1 Minute
+     */
+
+    private fun refreshData(){
+
+        Handler().postDelayed({
+            Log.d(GlobalVal.NETWORK_TAG,"Refresh Data")
+            if(isGetVisitorSuccess && isGetBoothSuccess) {
+                Log.d(GlobalVal.NETWORK_TAG,"Refresh Data Start")
+                getVisitorNumber()
+                getAllHost()
+            }
+            refreshData()
+        },60000)
+
+    }
+
+    private fun getVisitorNumber(){
+        val date = Date()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var current_date = RequestBody.create(MediaType.parse("text/plain"), dateFormat.format(date))
+
+        val requestBodyMap = HashMap<String, RequestBody>()
+        requestBodyMap["current_date"] = current_date
+
+        apiService!!.getVisitorNumber(requestBodyMap).enqueue(object : Callback<ResponseGetVisitorNumber>{
+            override fun onFailure(call: Call<ResponseGetVisitorNumber>?, t: Throwable?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onFailure getVisitorNumber "+t.toString())
+                Toast.makeText(this@MainActivity,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
+                isGetVisitorSuccess = false
+            }
+
+            override fun onResponse(
+                call: Call<ResponseGetVisitorNumber>?,
+                response: Response<ResponseGetVisitorNumber>?
+            ) {
+                Log.d(GlobalVal.NETWORK_TAG,"onResponse getVisitorNumber "+response.toString())
+                if( response?.code() == 200 && response.body() != null ){
+                    DAO.responseGetVisitorNumber = response.body()
+                    initVisitorNumber()
+                    isGetVisitorSuccess = true
+                }else{
+                    isGetVisitorSuccess = false
+                    Toast.makeText(this@MainActivity,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        })
+    }
+
+    private fun getAllHost(){
+        apiService!!.getAllHost().enqueue(object : Callback<ResponseGetHost> {
+            override fun onFailure(call: Call<ResponseGetHost>?, t: Throwable?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onFailure getAllHost "+t.toString())
+                Toast.makeText(this@MainActivity,"Get New Host Failed", Toast.LENGTH_SHORT).show()
+                isGetBoothSuccess = false
+            }
+            override fun onResponse(call: Call<ResponseGetHost>?, response: Response<ResponseGetHost>?) {
+                Log.d(GlobalVal.NETWORK_TAG,"onResponse getAllHost "+response.toString())
+                if( response?.code() == 200 && response.body() != null ){
+                    DAO.responseGetHost = response.body()
+                    initAutoCompleteHost()
+                    actv_host.isEnabled = true
+                    isGetBoothSuccess = true
+                }else{
+                    Toast.makeText(this@MainActivity,"Get New Host Failed", Toast.LENGTH_SHORT).show()
+                    isGetBoothSuccess = false
+                }
+            }
+        })
+    }
 }
