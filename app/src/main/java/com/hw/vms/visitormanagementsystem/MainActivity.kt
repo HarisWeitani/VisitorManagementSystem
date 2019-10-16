@@ -337,7 +337,8 @@ class MainActivity : AppCompatActivity() {
         return (
                 !guestName.isNullOrEmpty() &&
                 !guestPhone.isNullOrEmpty() &&
-                !guestCompany.isNullOrEmpty()
+                !guestCompany.isNullOrEmpty() &&
+                guestImage != null
                 )
     }
 
