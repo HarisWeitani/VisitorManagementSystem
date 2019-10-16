@@ -30,7 +30,11 @@ interface API {
 
     @Multipart
     @POST("api/booking/")
-    fun booking(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>, @Part image : MultipartBody.Part) : Call<ResponseBooking>
+    fun booking(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>, @Part image : MultipartBody.Part?) : Call<ResponseBooking>
+
+    @Multipart
+    @POST("api/booking/")
+    fun bookingNoImage(@PartMap params : Map<String, @JvmSuppressWildcards RequestBody>) : Call<ResponseBooking>
 
     companion object Factory{
 

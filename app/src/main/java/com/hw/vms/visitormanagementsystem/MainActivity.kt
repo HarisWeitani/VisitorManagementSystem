@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var tv_visitor_number : TextView
     lateinit var tv_date_now : TextView
     lateinit var et_name : EditText
-    lateinit var et_host : EditText
     lateinit var actv_host : AutoCompleteTextView
     lateinit var et_address : EditText
+    lateinit var et_company : EditText
     lateinit var et_phone_number : EditText
     lateinit var iv_profile_picture : ImageView
     lateinit var btn_start_camera : Button
@@ -127,9 +127,9 @@ class MainActivity : AppCompatActivity() {
         tv_visitor_number = findViewById(R.id.tv_visitor_number)
         tv_date_now = findViewById(R.id.tv_date_now)
         et_name = findViewById(R.id.et_name)
-        et_host = findViewById(R.id.et_host)
         actv_host = findViewById(R.id.actv_host)
         et_address = findViewById(R.id.et_address)
+        et_company = findViewById(R.id.et_company)
         et_phone_number = findViewById(R.id.et_phone_number)
         iv_profile_picture = findViewById(R.id.iv_profile_picture)
         btn_start_camera = findViewById(R.id.btn_start_camera)
@@ -304,10 +304,10 @@ class MainActivity : AppCompatActivity() {
         iv_profile_picture.setImageResource(R.drawable.profile_picture_default_transparent)
 
         et_name.text = null
-        et_host.text = null
         actv_host.text = null
         et_address.text = null
         et_phone_number.text = null
+        et_company.text = null
 
         hostId = null
         guestName = null
@@ -320,19 +320,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun validateData() : Boolean{
         getInputUser()
-        return ( !hostId.isNullOrEmpty() &&
+        /***
+         * Mandatory 16/10/2019 By Fandy
+         * Nama
+         * Phone
+         * Company
+         */
+/*        return ( !hostId.isNullOrEmpty() &&
                 !guestName.isNullOrEmpty() &&
                 !guestPhone.isNullOrEmpty() &&
                 !guestCompany.isNullOrEmpty() &&
                 !guestAddress.isNullOrEmpty() &&
                 guestImage != null
+                )*/
+
+        return (
+                !guestName.isNullOrEmpty() &&
+                !guestPhone.isNullOrEmpty() &&
+                !guestCompany.isNullOrEmpty()
                 )
     }
 
     private fun getInputUser(){
         guestName = et_name.text.toString()
         guestPhone = et_phone_number.text.toString()
-        guestCompany = " "
+        guestCompany = et_company.text.toString()
         guestAddress = et_address.text.toString()
         if(imagePhotoBitmap!=null) {
             guestImage = convertBitmapToFile()
@@ -340,13 +352,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun submit(){
+        if(hostId.isNullOrEmpty()) hostId = ""
+        if(guestAddress.isNullOrEmpty()) guestAddress = ""
 
         var host_id = RequestBody.create(MediaType.parse("text/plain"), hostId)
         var guest_name = RequestBody.create(MediaType.parse("text/plain"), guestName)
         var guest_phone = RequestBody.create(MediaType.parse("text/plain"), guestPhone)
         var guest_company = RequestBody.create(MediaType.parse("text/plain"), guestCompany)
         var guest_address = RequestBody.create(MediaType.parse("text/plain"), guestAddress)
-        var guest_image = RequestBody.create(MediaType.parse("image/*"), guestImage)
+
+        var guest_image : RequestBody? = null
+        if (guestImage != null) guest_image = RequestBody.create(MediaType.parse("image/*"), guestImage)
 //        var guest_image = RequestBody.create(MediaType.parse("image/*"), convertBitmapToFile())
 
         val requestBodyMap = HashMap<String, RequestBody>()
@@ -356,31 +372,57 @@ class MainActivity : AppCompatActivity() {
         requestBodyMap["guest_company"] = guest_company
         requestBodyMap["guest_address"] = guest_address
 
-        val image_body = MultipartBody.Part.createFormData("guest_image","guest_image.jpeg",guest_image)
-
-        apiService!!.booking(requestBodyMap, image_body).enqueue(object : Callback<ResponseBooking>{
-            override fun onFailure(call: Call<ResponseBooking>?, t: Throwable?) {
-                Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
-                loadingDialog?.dismiss()
-                showSubmitFailedDialog()
-            }
-
-            override fun onResponse(
-                call: Call<ResponseBooking>?,
-                response: Response<ResponseBooking>?
-            ) {
-                Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
-                if( response?.code() == 200 && response.body() != null ) {
-                    loadingDialog?.dismiss()
-                    showThankYouDialog()
-                    getVisitorNumber()
-                }else{
+        var image_body : MultipartBody.Part? = null
+        if(guest_image != null) {
+            image_body = MultipartBody.Part.createFormData("guest_image","guest_image.jpeg",guest_image)
+            apiService!!.booking(requestBodyMap, image_body).enqueue(object : Callback<ResponseBooking>{
+                override fun onFailure(call: Call<ResponseBooking>?, t: Throwable?) {
+                    Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
                     loadingDialog?.dismiss()
                     showSubmitFailedDialog()
                 }
-            }
 
-        })
+                override fun onResponse(
+                    call: Call<ResponseBooking>?,
+                    response: Response<ResponseBooking>?
+                ) {
+                    Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
+                    if( response?.code() == 200 && response.body() != null ) {
+                        loadingDialog?.dismiss()
+                        showThankYouDialog()
+                        getVisitorNumber()
+                    }else{
+                        loadingDialog?.dismiss()
+                        showSubmitFailedDialog()
+                    }
+                }
+            })
+        }else{
+            apiService!!.bookingNoImage(requestBodyMap).enqueue(object : Callback<ResponseBooking>{
+                override fun onFailure(call: Call<ResponseBooking>?, t: Throwable?) {
+                    Log.d(GlobalVal.NETWORK_TAG,"onFailure submit "+t.toString())
+                    loadingDialog?.dismiss()
+                    showSubmitFailedDialog()
+                }
+
+                override fun onResponse(
+                    call: Call<ResponseBooking>?,
+                    response: Response<ResponseBooking>?
+                ) {
+                    Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
+                    if( response?.code() == 200 && response.body() != null ) {
+                        loadingDialog?.dismiss()
+                        showThankYouDialog()
+                        getVisitorNumber()
+                    }else{
+                        loadingDialog?.dismiss()
+                        showSubmitFailedDialog()
+                    }
+                }
+            })
+        }
+
+
     }
 
     override fun onBackPressed() {
