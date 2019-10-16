@@ -89,6 +89,12 @@ class MainActivity : AppCompatActivity() {
     var isGetHostFinished : Boolean = false
     var firstInstall : Boolean = true
 
+    var hostId : String? = null
+    var guestName : String? = null
+    var guestPhone : String? = null
+    var guestCompany : String? = null
+    var guestAddress : String? = null
+    var guestImage : File? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -302,14 +308,15 @@ class MainActivity : AppCompatActivity() {
         actv_host.text = null
         et_address.text = null
         et_phone_number.text = null
-    }
 
-    var hostId : String? = null
-    var guestName : String? = null
-    var guestPhone : String? = null
-    var guestCompany : String? = null
-    var guestAddress : String? = null
-    var guestImage : File? = null
+        hostId = null
+        guestName = null
+        guestPhone = null
+        guestCompany = null
+        guestAddress = null
+        guestImage = null
+        imagePhotoBitmap = null
+    }
 
     private fun validateData() : Boolean{
         getInputUser()
@@ -374,6 +381,10 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    override fun onBackPressed() {
+
     }
 
     private fun convertBitmapToFile() : File{
