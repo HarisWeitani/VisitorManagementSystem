@@ -33,6 +33,7 @@ import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity() {
         btn_save = findViewById(R.id.btn_save)
         layout_camera = findViewById(R.id.layout_camera)
 
+        btn_start_camera.text = "Camera"
         btn_start_camera.setOnClickListener {
             if(isCameraInitialized) {
                 captureImage()
@@ -201,6 +203,7 @@ class MainActivity : AppCompatActivity() {
                     isCameraInitialized = true
                     layout_camera.visibility = View.VISIBLE
                     iv_profile_picture.visibility = View.GONE
+                    btn_start_camera.text = "Take A Photo"
                 } catch (e: RuntimeException) {
                 }
             }
@@ -250,13 +253,14 @@ class MainActivity : AppCompatActivity() {
             try {
                 camera!!.takePicture(null,null,pictureCallback)
                 isCameraInitialized = false
+                btn_start_camera.text = "Camera"
             }catch (e : Exception){}
         }
     }
 
     private fun initDate(){
         val date = Date()
-        val df = SimpleDateFormat("dd/MM/yyyy")
+        val df = SimpleDateFormat("dd MMMM yyyy")
         runOnUiThread {
             tv_date_now.text = "Date : ${df.format(date)}"
         }
@@ -337,8 +341,7 @@ class MainActivity : AppCompatActivity() {
         return (
                 !guestName.isNullOrEmpty() &&
                 !guestPhone.isNullOrEmpty() &&
-                !guestCompany.isNullOrEmpty() &&
-                guestImage != null
+                !guestCompany.isNullOrEmpty()
                 )
     }
 
