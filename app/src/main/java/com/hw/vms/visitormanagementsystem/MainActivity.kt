@@ -393,11 +393,17 @@ class MainActivity : AppCompatActivity() {
                     Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
                     if( response?.code() == 200 && response.body() != null ) {
                         loadingDialog?.dismiss()
-                        showThankYouDialog()
-                        getVisitorNumber()
+                        if(response.body().ok == 1) {
+                            showThankYouDialog()
+                            getVisitorNumber()
+                        }else{
+                            try{
+                                Toast.makeText(this@MainActivity,"${response.body().message}",Toast.LENGTH_LONG).show()
+                            }catch (e :Exception){}
+                            submitFailed()
+                        }
                     }else{
-                        loadingDialog?.dismiss()
-                        showSubmitFailedDialog()
+                        submitFailed()
                     }
                 }
             })
@@ -416,18 +422,28 @@ class MainActivity : AppCompatActivity() {
                     Log.d(GlobalVal.NETWORK_TAG,"onResponse submit "+response.toString())
                     if( response?.code() == 200 && response.body() != null ) {
                         loadingDialog?.dismiss()
-                        showThankYouDialog()
-                        getVisitorNumber()
+                        if(response.body().ok == 1) {
+                            showThankYouDialog()
+                            getVisitorNumber()
+                        }else{
+                            try{
+                                Toast.makeText(this@MainActivity,"${response.body().message}",Toast.LENGTH_LONG).show()
+                            }catch (e :Exception){}
+                            submitFailed()
+                        }
                     }else{
-                        loadingDialog?.dismiss()
-                        showSubmitFailedDialog()
+                        submitFailed()
                     }
                 }
             })
         }
-
-
     }
+
+    private fun submitFailed(){
+        loadingDialog?.dismiss()
+        showSubmitFailedDialog()
+    }
+
 
     override fun onBackPressed() {
 
