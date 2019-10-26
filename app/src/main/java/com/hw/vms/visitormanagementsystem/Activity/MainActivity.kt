@@ -1,4 +1,4 @@
-package com.hw.vms.visitormanagementsystem
+package com.hw.vms.visitormanagementsystem.Activity
 
 import android.Manifest
 import android.app.Dialog
@@ -23,6 +23,8 @@ import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Adapter.HostAdapter
+import com.hw.vms.visitormanagementsystem.AdminLoginActivity
+import com.hw.vms.visitormanagementsystem.CameraPreview
 import com.hw.vms.visitormanagementsystem.DataSet.DataHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
@@ -30,10 +32,10 @@ import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
 import com.hw.vms.visitormanagementsystem.Helper.SettingsData
 import com.hw.vms.visitormanagementsystem.Helper.SharedPreference
+import com.hw.vms.visitormanagementsystem.R
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -162,7 +164,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         iv_logo.setOnLongClickListener {
-            startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@MainActivity,
+                AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
             true
         }
 
@@ -198,7 +201,7 @@ class MainActivity : AppCompatActivity() {
             if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 try {
                     camera = Camera.open(camIdx)
-                    cameraPreview = CameraPreview(this,camera!!)
+                    cameraPreview = CameraPreview(this, camera!!)
                     layout_camera.addView(cameraPreview)
                     isCameraInitialized = true
                     layout_camera.visibility = View.VISIBLE
@@ -219,7 +222,8 @@ class MainActivity : AppCompatActivity() {
             isPermitted = true
         }
         if(firstInstall){
-            startActivity(Intent(this@MainActivity,AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@MainActivity,
+                AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }else if (isPermitted){
             initApp()
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/layout_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        >
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="236dp"
+            android:layout_height="60dp"
+
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginBottom="16dp"
+
+            android:src="@drawable/ic_sinarmas_logo"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:orientation="horizontal"
+        android:background="@color/sinarmasRedBright"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:id="@+id/tv_visitor_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+
+            android:text="Visitor Number : 1242"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            />
+
+        <TextView
+            android:id="@+id/tv_date_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+
+            android:text="Date : 18/09/2019"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            />
+    </LinearLayout>
+
+</LinearLayout>

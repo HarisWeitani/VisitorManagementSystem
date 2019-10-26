@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.hw.rms.roommanagementsystem.Helper.DAO
+import com.hw.vms.visitormanagementsystem.Activity.MainActivity
 
 class AdminLoginActivity : AppCompatActivity() {
 
@@ -51,7 +52,8 @@ class AdminLoginActivity : AppCompatActivity() {
         })
 
         btnBack.setOnClickListener {
-            startActivity(Intent(this@AdminLoginActivity,MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@AdminLoginActivity,
+                MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }
 
     }

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/background_grey"
-    tools:context=".MainActivity">
+    tools:context=".Activity.MainActivity">
 
     <LinearLayout
         android:id="@+id/layout_logo"

@@ -20,16 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AdminSettingActivity"
-            android:screenOrientation="landscape">
 
-        </activity>
         <activity
-            android:name=".AdminLoginActivity"
-            android:screenOrientation="landscape">
-        </activity>
-        <activity
-            android:name=".MainActivity"
+            android:name=".Activity.NameActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +30,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.CompanyActivity"
+            android:screenOrientation="landscape">
+
+        </activity>
+
+        <activity
+            android:name=".AdminSettingActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".AdminLoginActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.MainActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>
