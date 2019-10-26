@@ -38,6 +38,9 @@
         <activity
             android:name=".Activity.HostActivity"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.PhotoActivity"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".AdminSettingActivity"

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_grey"
+    tools:context=".Activity.PhotoActivity">
+
+    <include layout="@layout/layout_header"/>
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+
+        android:orientation="vertical"
+        android:background="@color/white"
+
+        android:gravity="center"
+
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
+
+            <FrameLayout
+                android:id="@+id/layout_camera"
+                android:layout_width="504dp"
+                android:layout_height="378dp"
+                android:visibility="gone"
+                >
+
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/iv_profile_picture"
+                android:layout_width="504dp"
+                android:layout_height="378dp"
+                android:src="@drawable/profile_picture_default_transparent"
+                android:background="@color/background_grey"
+                />
+            <Button
+                android:id="@+id/btn_start_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="16dp"
+
+                android:text="Camera"
+                android:textSize="20sp"
+                android:textColor="@color/background_grey"
+
+                android:drawableLeft="@drawable/ic_camera_alt_black_24dp"
+                android:drawablePadding="8dp"
+                android:background="@drawable/button_res"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="64dp"
+
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="64dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:background="@color/sinarmasRedBright"
+
+            android:text="back"
+            android:textSize="28sp"
+            android:textColor="@color/white"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="64dp"
+            />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="64dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:background="@color/sinarmasRedBright"
+
+            android:text="Next"
+            android:textSize="28sp"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+</LinearLayout>
