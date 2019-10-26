@@ -26,6 +26,7 @@ class PhotoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo)
         initView()
+        initHeader()
     }
 
     private fun initView() {
@@ -33,7 +34,7 @@ class PhotoActivity : AppCompatActivity() {
         btn_back = findViewById(R.id.btn_back)
 
         btn_next.setOnClickListener {
-            startActivity<HostActivity>()
+            startActivity<SummaryActivity>()
         }
         btn_back.setOnClickListener {
             super.onBackPressed()
@@ -61,5 +62,8 @@ class PhotoActivity : AppCompatActivity() {
             res = DAO.responseGetVisitorNumber?.visitor_number!!
         }catch (e:Exception){}
         tv_visitor_number.text = "Visitor Number : $res"
+    }
+    override fun onBackPressed() {
+
     }
 }

@@ -87,4 +87,7 @@ class HostActivity : AppCompatActivity() {
         }catch (e:Exception){}
         tv_visitor_number.text = "Visitor Number : $res"
     }
+    override fun onBackPressed() {
+
+    }
 }

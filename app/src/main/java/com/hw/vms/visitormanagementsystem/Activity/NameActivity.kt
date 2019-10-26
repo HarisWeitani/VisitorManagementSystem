@@ -2,10 +2,7 @@ package com.hw.vms.visitormanagementsystem.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.R
 import org.jetbrains.anko.startActivity
@@ -33,9 +30,13 @@ class NameActivity : AppCompatActivity() {
         et_name = findViewById(R.id.et_name)
         btn_next = findViewById(R.id.btn_next)
 
-
         btn_next.setOnClickListener {
-            startActivity<CompanyActivity>()
+            if( !et_name.text.isNullOrEmpty() ){
+                DAO.name = et_name.text.toString()
+                startActivity<CompanyActivity>()
+            }else{
+                Toast.makeText(this@NameActivity,"Name Cannot Be Empty", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -60,5 +61,8 @@ class NameActivity : AppCompatActivity() {
             res = DAO.responseGetVisitorNumber?.visitor_number!!
         }catch (e:Exception){}
         tv_visitor_number.text = "Visitor Number : $res"
+    }
+    override fun onBackPressed() {
+
     }
 }

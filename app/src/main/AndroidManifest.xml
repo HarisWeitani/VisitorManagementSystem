@@ -20,6 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/NoActionBar"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".Activity.NameActivity"
             android:screenOrientation="landscape">
@@ -40,6 +41,9 @@
             android:screenOrientation="landscape" />
         <activity
             android:name=".Activity.PhotoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.SummaryActivity"
             android:screenOrientation="landscape" />
 
         <activity

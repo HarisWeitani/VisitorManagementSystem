@@ -2,10 +2,7 @@ package com.hw.vms.visitormanagementsystem.Activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.R
 import org.jetbrains.anko.startActivity
@@ -36,7 +33,13 @@ class CompanyActivity : AppCompatActivity() {
         btn_back = findViewById(R.id.btn_back)
 
         btn_next.setOnClickListener {
-            startActivity<PhoneEmailActivity>()
+            if( !et_company.text.isNullOrEmpty() ){
+                DAO.company = et_company.text.toString()
+                startActivity<PhoneEmailActivity>()
+            }else{
+                Toast.makeText(this@CompanyActivity,"Company Cannot Be Empty", Toast.LENGTH_SHORT).show()
+            }
+
         }
         btn_back.setOnClickListener {
             super.onBackPressed()
@@ -64,5 +67,9 @@ class CompanyActivity : AppCompatActivity() {
             res = DAO.responseGetVisitorNumber?.visitor_number!!
         }catch (e:Exception){}
         tv_visitor_number.text = "Visitor Number : $res"
+    }
+
+    override fun onBackPressed() {
+
     }
 }
