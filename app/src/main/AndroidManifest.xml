@@ -31,10 +31,13 @@
         </activity>
         <activity
             android:name=".Activity.CompanyActivity"
-            android:screenOrientation="landscape"></activity>
-        <activity android:name=".Activity.PhoneEmailActivity"
-            android:screenOrientation="landscape"></activity>
-
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.PhoneEmailActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Activity.HostActivity"
+            android:screenOrientation="landscape" />
 
         <activity
             android:name=".AdminSettingActivity"
