@@ -3,7 +3,6 @@ package com.hw.vms.visitormanagementsystem.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.hw.rms.roommanagementsystem.Helper.DAO
@@ -12,26 +11,24 @@ import org.jetbrains.anko.startActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CompanyActivity : AppCompatActivity() {
+class PhoneEmailActivity : AppCompatActivity() {
 
     lateinit var iv_logo : ImageView
     lateinit var tv_visitor_number : TextView
     lateinit var tv_date_now : TextView
 
-    lateinit var et_company : EditText
     lateinit var btn_back : Button
     lateinit var btn_next : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_company)
+        setContentView(R.layout.activity_phone_email)
 
         initHeader()
         initView()
     }
 
     private fun initView(){
-        et_company = findViewById(R.id.et_company)
         btn_next = findViewById(R.id.btn_next)
         btn_back = findViewById(R.id.btn_back)
 
