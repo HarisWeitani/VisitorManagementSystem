@@ -29,6 +29,18 @@ class PhoneEmailActivity : AppCompatActivity() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            if( !DAO.phone.isNullOrEmpty() ){
+                et_phone_number.setText(DAO.phone)
+            }
+            if( !DAO.email.isNullOrEmpty() ){
+                et_email.setText(DAO.email)
+            }
+        }catch (e:Exception){}
+    }
+
     private fun initView(){
         btn_next = findViewById(R.id.btn_next)
         btn_back = findViewById(R.id.btn_back)

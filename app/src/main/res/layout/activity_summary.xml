@@ -115,7 +115,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/tv_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"

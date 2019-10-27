@@ -77,6 +77,7 @@ class SummaryActivity : AppCompatActivity() {
         btn_submit = findViewById(R.id.btn_submit)
 
         btn_submit.setOnClickListener {
+            loadingDialog?.show()
             submit(convertBitmapToFile())
         }
         btn_back.setOnClickListener {
@@ -86,7 +87,7 @@ class SummaryActivity : AppCompatActivity() {
         tv_name.text = DAO.name
         tv_host.text = DAO.host_name
         tv_company.text = DAO.company
-        tv_phone_number.text = DAO.company
+        tv_phone_number.text = DAO.phone
         tv_email.text = DAO.email
         iv_profile_picture.setImageBitmap(DAO.imageBmp)
     }

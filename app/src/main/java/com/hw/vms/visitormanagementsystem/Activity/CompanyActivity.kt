@@ -27,6 +27,15 @@ class CompanyActivity : AppCompatActivity() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            if( !DAO.company.isNullOrEmpty() ){
+                et_company.setText(DAO.company)
+            }
+        }catch (e:Exception){}
+    }
+
     private fun initView(){
         et_company = findViewById(R.id.et_company)
         btn_next = findViewById(R.id.btn_next)

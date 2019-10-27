@@ -106,7 +106,7 @@ class AdminSettingActivity : AppCompatActivity() {
     }
     private fun initButtonListener(){
         btnBack.setOnClickListener {
-            startActivity(Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@AdminSettingActivity, NameActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
         }
         btn_try_serverconn.setOnClickListener {
             if( et_server_url.text.length > 10 ){

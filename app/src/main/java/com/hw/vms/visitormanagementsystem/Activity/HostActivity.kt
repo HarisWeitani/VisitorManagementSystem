@@ -30,6 +30,16 @@ class HostActivity : AppCompatActivity() {
         initView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            if( !DAO.host_name.isNullOrEmpty() && !DAO.host_id.isNullOrEmpty() ){
+                actv_host.setText(DAO.host_name)
+                hostId = DAO.host_id
+            }
+        }catch (e:Exception){}
+    }
+
     private fun initView(){
         btn_next = findViewById(R.id.btn_next)
         btn_back = findViewById(R.id.btn_back)

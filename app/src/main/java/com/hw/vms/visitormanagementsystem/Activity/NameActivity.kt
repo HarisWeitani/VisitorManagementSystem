@@ -82,6 +82,12 @@ class NameActivity : AppCompatActivity() {
         }else if (isPermitted){
             initApp()
         }
+
+        try {
+            if( !DAO.name.isNullOrEmpty() ){
+                et_name.setText(DAO.name)
+            }
+        }catch (e:Exception){}
     }
 
     private fun checkPermission() {

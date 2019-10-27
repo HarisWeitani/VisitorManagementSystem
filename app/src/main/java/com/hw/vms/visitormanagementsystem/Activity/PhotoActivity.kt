@@ -44,6 +44,18 @@ class PhotoActivity : AppCompatActivity() {
         initHeader()
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            if( DAO.imageBmp != null){
+                layout_camera.visibility = View.GONE
+                iv_profile_picture.setImageBitmap(DAO.imageBmp)
+                iv_profile_picture.visibility = View.VISIBLE
+                imagePhotoBitmap = DAO.imageBmp
+            }
+        }catch (e:Exception){}
+    }
+
     private fun initView() {
         btn_next = findViewById(R.id.btn_next)
         btn_back = findViewById(R.id.btn_back)
