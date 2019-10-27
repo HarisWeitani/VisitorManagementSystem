@@ -1,5 +1,6 @@
 package com.hw.rms.roommanagementsystem.Helper
 
+import android.graphics.Bitmap
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
@@ -28,7 +29,8 @@ class DAO {
         var company : String? = ""
         var phone : String? = ""
         var email : String? = ""
-        var host : String? = ""
-        var image : File? = null
+        var host_id : String? = ""
+        var host_name : String? = ""
+        var imageBmp : Bitmap? = null
     }
 }

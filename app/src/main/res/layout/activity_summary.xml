@@ -42,15 +42,16 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/et_name"
+            <TextView
+                android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
+                android:gravity="center_vertical"
 
-                android:inputType="text"
-                android:hint="Enter Name"
+                android:text="Your Name"
+                android:textSize="18sp"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"
                 android:textColor="@color/black"
@@ -66,15 +67,16 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/actv_host"
+            <TextView
+                android:id="@+id/tv_host"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
+                android:gravity="center_vertical"
 
-                android:inputType="text"
-                android:hint="Enter Host"
+                android:text="Host"
+                android:textSize="18sp"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"
                 android:textColor="@color/black"
@@ -89,15 +91,16 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/et_company"
+            <TextView
+                android:id="@+id/tv_company"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
+                android:gravity="center_vertical"
 
-                android:inputType="text"
-                android:hint="Enter Company"
+                android:text="Company"
+                android:textSize="18sp"
                 android:textColorHint="@color/background_grey"
                 android:paddingStart="32dp"
                 android:textColor="@color/black"
@@ -113,15 +116,15 @@
                 android:textSize="20sp" />
 
             <EditText
-                android:id="@+id/et_phone_number"
+                android:id="@+id/tv_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
+                android:gravity="center_vertical"
 
-                android:hint="Enter Phone Number"
-                android:textColorHint="@color/background_grey"
-                android:inputType="number"
+                android:text="Number"
+                android:textSize="18sp"
                 android:paddingStart="32dp"
                 android:textColor="@color/black"
                 />
@@ -149,20 +152,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:text="Address"
+                android:text="Email"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/et_address"
+            <TextView
+                android:id="@+id/tv_email"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/edit_text_box"
+                android:gravity="center_vertical"
 
-                android:inputType="text"
-                android:hint="Enter Address"
-                android:textColorHint="@color/background_grey"
+                android:text="Email"
+                android:textSize="18sp"
                 android:paddingStart="32dp"
                 android:textColor="@color/black"
                 />
@@ -171,7 +174,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Take Photo"
+                android:text="Photo"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 />
@@ -181,37 +184,12 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 >
-                <FrameLayout
-                    android:id="@+id/layout_camera"
-                    android:layout_width="280dp"
-                    android:layout_height="210dp"
-                    android:visibility="gone"
-                    >
-
-                </FrameLayout>
-
                 <ImageView
                     android:id="@+id/iv_profile_picture"
-                    android:layout_width="280dp"
-                    android:layout_height="210dp"
+                    android:layout_width="336dp"
+                    android:layout_height="252dp"
                     android:src="@drawable/profile_picture_default_transparent"
                     android:background="@color/background_grey"
-                    />
-                <Button
-                    android:id="@+id/btn_start_camera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:layout_marginStart="16dp"
-
-                    android:text="Camera"
-                    android:textSize="20sp"
-                    android:textColor="@color/background_grey"
-
-                    android:drawableLeft="@drawable/ic_camera_alt_black_24dp"
-                    android:drawablePadding="8dp"
-                    android:background="@drawable/button_res"
                     />
             </LinearLayout>
 

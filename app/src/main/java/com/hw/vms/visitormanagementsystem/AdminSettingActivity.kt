@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Activity.MainActivity
+import com.hw.vms.visitormanagementsystem.Activity.NameActivity
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import com.hw.vms.visitormanagementsystem.Helper.GlobalVal
@@ -140,7 +141,7 @@ class AdminSettingActivity : AppCompatActivity() {
             sharePref!!.save(GlobalVal.FRESH_INSTALL_KEY, false)
             sharePref!!.save(GlobalVal.SETTINGS_DATA_KEY, settingDataJson)
             startActivity(
-                Intent(this@AdminSettingActivity, MainActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                Intent(this@AdminSettingActivity, NameActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             )
         }
 

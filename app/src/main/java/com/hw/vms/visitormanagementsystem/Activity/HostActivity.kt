@@ -3,10 +3,7 @@ package com.hw.vms.visitormanagementsystem.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Adapter.HostAdapter
 import com.hw.vms.visitormanagementsystem.DataSet.DataHost
@@ -39,7 +36,15 @@ class HostActivity : AppCompatActivity() {
         actv_host = findViewById(R.id.actv_host)
 
         btn_next.setOnClickListener {
-            startActivity<PhotoActivity>()
+
+            if( hostId != null && !actv_host.text.isNullOrEmpty()) {
+                DAO.host_id = hostId
+                DAO.host_name = actv_host.text.toString()
+                startActivity<PhotoActivity>()
+            }else{
+                Toast.makeText(this@HostActivity,"Please Select The Host", Toast.LENGTH_SHORT).show()
+            }
+
         }
         btn_back.setOnClickListener {
             super.onBackPressed()
