@@ -50,9 +50,13 @@ class PhoneEmailActivity : AppCompatActivity() {
 
         btn_next.setOnClickListener {
             if( !et_phone_number.text.isNullOrEmpty() && !et_email.text.isNullOrEmpty() ){
-                DAO.phone = et_phone_number.text.toString()
-                DAO.email = et_email.text.toString()
-                startActivity<HostActivity>()
+                if( validateEmail(et_email.text.toString()) ) {
+                    DAO.phone = et_phone_number.text.toString()
+                    DAO.email = et_email.text.toString()
+                    startActivity<HostActivity>()
+                }else{
+                    Toast.makeText(this@PhoneEmailActivity,"Invalid Email Address", Toast.LENGTH_SHORT).show()
+                }
             }else{
                 Toast.makeText(this@PhoneEmailActivity,"Phone and Email Cannot Be Empty", Toast.LENGTH_SHORT).show()
             }
@@ -61,6 +65,10 @@ class PhoneEmailActivity : AppCompatActivity() {
         btn_back.setOnClickListener {
             super.onBackPressed()
         }
+    }
+
+    private fun validateEmail(email : String) : Boolean{
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
     }
 
     private fun initHeader(){
