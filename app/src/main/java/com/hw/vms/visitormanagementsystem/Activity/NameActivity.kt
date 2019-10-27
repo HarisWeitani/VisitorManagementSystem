@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -50,6 +51,12 @@ class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
 
     var networkHelper : NetworkHelper? = null
 
+    var isVisitorDone : Boolean = false
+    var isHostDone : Boolean = false
+
+    var refreshHandler : Handler? = null
+    var refreshRunnable : Runnable? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_name)
@@ -66,11 +73,21 @@ class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
 
         networkHelper = NetworkHelper(this)
         getData()
-    }
-
-    private fun getData(){
-//        networkHelper?.getAllHost(this)
-        networkHelper?.getVisitorNumber(this)
+        refreshHandler = Handler()
+        refreshRunnable = Runnable {
+            Log.d("refreshData", "Refresh Data")
+            if(isHostDone && isVisitorDone) {
+                Log.d("refreshData", "Refresh Data Started")
+                getData()
+                isHostDone = false
+                isVisitorDone = false
+            }
+            else{
+                Log.d("refreshData", "Refresh Data Finish")
+            }
+            refreshData()
+        }
+        refreshData()
     }
 
     override fun onResume() {
@@ -94,6 +111,22 @@ class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
                 et_name.setText(DAO.name)
             }
         }catch (e:Exception){}
+    }
+
+    override fun onPause() {
+        refreshHandler?.removeCallbacks(refreshRunnable)
+        super.onPause()
+    }
+
+    private fun refreshData(){
+        try {
+            refreshHandler?.postDelayed(refreshRunnable,60000)
+        }catch (e:Exception){}
+    }
+
+    private fun getData(){
+        networkHelper?.getAllHost(this)
+        networkHelper?.getVisitorNumber(this)
     }
 
     private fun checkPermission() {
@@ -162,10 +195,11 @@ class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
 
     }
     override fun callbackGetAllHost(status: Boolean) {
-
+        isHostDone = true
     }
     override fun callbackGetVisitor(res: Int) {
         initVisitorNumber()
+        isVisitorDone = true
     }
 
 }
