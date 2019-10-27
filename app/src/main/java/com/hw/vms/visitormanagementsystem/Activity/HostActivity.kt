@@ -1,18 +1,22 @@
 package com.hw.vms.visitormanagementsystem.Activity
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.Window
 import android.widget.*
 import com.hw.rms.roommanagementsystem.Helper.DAO
 import com.hw.vms.visitormanagementsystem.Adapter.HostAdapter
 import com.hw.vms.visitormanagementsystem.DataSet.DataHost
+import com.hw.vms.visitormanagementsystem.Helper.NetworkHelper
 import com.hw.vms.visitormanagementsystem.R
 import org.jetbrains.anko.startActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HostActivity : AppCompatActivity() {
+class HostActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
 
     lateinit var iv_logo : ImageView
     lateinit var tv_visitor_number : TextView
@@ -21,6 +25,9 @@ class HostActivity : AppCompatActivity() {
     lateinit var btn_next : Button
     lateinit var actv_host : AutoCompleteTextView
 
+    lateinit var btn_refresh_host : Button
+    var loadingDialog : Dialog? = null
+
     var hostId : String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +35,8 @@ class HostActivity : AppCompatActivity() {
         setContentView(R.layout.activity_host)
         initHeader()
         initView()
+        loadingDialog = Dialog(this@HostActivity)
+        initLoadingDialog()
     }
 
     override fun onResume() {
@@ -38,12 +47,25 @@ class HostActivity : AppCompatActivity() {
                 hostId = DAO.host_id
             }
         }catch (e:Exception){}
+
+        if( DAO.responseGetHost == null ){
+            refreshHost()
+        }
+    }
+
+    private fun refreshHost(){
+        loadingDialog?.show()
+        val networkHelper = NetworkHelper(this)
+        networkHelper.getAllHost(this)
+        networkHelper.getVisitorNumber(this)
     }
 
     private fun initView(){
         btn_next = findViewById(R.id.btn_next)
         btn_back = findViewById(R.id.btn_back)
         actv_host = findViewById(R.id.actv_host)
+        btn_refresh_host = findViewById(R.id.btn_refresh_host)
+
 
         btn_next.setOnClickListener {
 
@@ -60,7 +82,17 @@ class HostActivity : AppCompatActivity() {
             super.onBackPressed()
         }
 
-        actv_host.isEnabled = DAO.responseGetHost != null
+        btn_refresh_host.setOnClickListener {
+            refreshHost()
+        }
+
+        if(DAO.responseGetHost == null){
+            actv_host.isEnabled = false
+            btn_refresh_host.visibility = View.VISIBLE
+        }else{
+            actv_host.isEnabled = true
+            btn_refresh_host.visibility = View.GONE
+        }
 
         actv_host.setOnItemClickListener { parent, view, position, id ->
             Log.d("ahsiap","asdas $id")
@@ -105,4 +137,23 @@ class HostActivity : AppCompatActivity() {
     override fun onBackPressed() {
 
     }
+    fun initLoadingDialog(){
+        loadingDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        loadingDialog?.setCancelable(false)
+        loadingDialog?.setContentView(R.layout.loading_dialog)
+    }
+    override fun callbackGetAllHost(status: Boolean) {
+        loadingDialog?.dismiss()
+        if( status ){
+            btn_refresh_host.visibility = View.GONE
+            initAutoCompleteHost()
+        }else{
+            btn_refresh_host.visibility = View.VISIBLE
+        }
+    }
+    override fun callbackGetVisitor(res: Int) {
+
+    }
+
+
 }

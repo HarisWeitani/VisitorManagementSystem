@@ -1,5 +1,6 @@
 package com.hw.vms.visitormanagementsystem.Helper
 
+import android.app.Dialog
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -11,6 +12,7 @@ import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.jetbrains.anko.doAsync
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,7 +20,8 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NetworkHelper{
+class NetworkHelper(internal var listener : NetworkCallback){
+
     var apiService : API? = API.networkApi()
     var isGetVisitorFinished : Boolean = false
     var isGetHostFinished : Boolean = false
@@ -39,6 +42,7 @@ class NetworkHelper{
                 isGetVisitorFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onFailure getVisitorNumber "+t.toString())
                 Toast.makeText(context,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
+                listener.callbackGetVisitor(0)
             }
 
             override fun onResponse(
@@ -49,7 +53,9 @@ class NetworkHelper{
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse getVisitorNumber "+response?.body().toString())
                 if( response?.code() == 200 && response.body() != null ){
                     DAO.responseGetVisitorNumber = response.body()
+                    listener.callbackGetVisitor(DAO.responseGetVisitorNumber?.visitor_number!!)
                 }else{
+                    listener.callbackGetVisitor(0)
                     Toast.makeText(context,"Get Total Visitor Failed", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -66,17 +72,25 @@ class NetworkHelper{
                 isGetHostFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onFailure getAllHost "+t.toString())
                 Toast.makeText(context,"Get New Host Failed", Toast.LENGTH_SHORT).show()
+                listener.callbackGetAllHost(false)
             }
             override fun onResponse(call: Call<ResponseGetHost>?, response: Response<ResponseGetHost>?) {
                 isGetHostFinished = true
                 Log.d(GlobalVal.NETWORK_TAG,"onResponse getAllHost "+response?.body().toString())
                 if( response?.code() == 200 && response.body() != null ){
                     DAO.responseGetHost = response.body()
+                    listener.callbackGetAllHost(true)
                 }else{
                     Toast.makeText(context,"Get New Host Failed", Toast.LENGTH_SHORT).show()
+                    listener.callbackGetAllHost(false)
                 }
             }
         })
+    }
+
+    interface NetworkCallback{
+        fun callbackGetAllHost(status : Boolean)
+        fun callbackGetVisitor(res : Int)
     }
 
 }

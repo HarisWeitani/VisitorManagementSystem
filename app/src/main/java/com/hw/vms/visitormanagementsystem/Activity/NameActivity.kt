@@ -31,7 +31,7 @@ import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NameActivity : AppCompatActivity() {
+class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
 
     /***
      * Permission
@@ -48,6 +48,8 @@ class NameActivity : AppCompatActivity() {
     lateinit var btn_next : Button
     var firstInstall : Boolean = true
 
+    var networkHelper : NetworkHelper? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_name)
@@ -62,9 +64,13 @@ class NameActivity : AppCompatActivity() {
         initHeader()
         initView()
 
-        val networkHelper = NetworkHelper()
-        networkHelper.getAllHost(this)
-        networkHelper.getVisitorNumber(this)
+        networkHelper = NetworkHelper(this)
+        getData()
+    }
+
+    private fun getData(){
+//        networkHelper?.getAllHost(this)
+        networkHelper?.getVisitorNumber(this)
     }
 
     override fun onResume() {
@@ -154,6 +160,12 @@ class NameActivity : AppCompatActivity() {
     }
     override fun onBackPressed() {
 
+    }
+    override fun callbackGetAllHost(status: Boolean) {
+
+    }
+    override fun callbackGetVisitor(res: Int) {
+        initVisitorNumber()
     }
 
 }
