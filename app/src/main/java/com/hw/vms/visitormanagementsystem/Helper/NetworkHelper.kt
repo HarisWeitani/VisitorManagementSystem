@@ -5,13 +5,16 @@ import android.util.Log
 import android.widget.Toast
 import com.hw.rms.roommanagementsystem.Helper.API
 import com.hw.rms.roommanagementsystem.Helper.DAO
+import com.hw.vms.visitormanagementsystem.DataSet.ResponseBooking
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetHost
 import com.hw.vms.visitormanagementsystem.DataSet.ResponseGetVisitorNumber
 import okhttp3.MediaType
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -75,4 +78,5 @@ class NetworkHelper{
             }
         })
     }
+
 }
