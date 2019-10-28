@@ -35,6 +35,7 @@ class AdminSettingActivity : AppCompatActivity() {
     lateinit var btnBack : LinearLayout
     lateinit var btn_save_and_exit : Button
     var sharePref : SharedPreference? = null
+    lateinit var tv_version_name : TextView
 
     lateinit var btn_try_serverconn : Button
     lateinit var et_server_url : EditText
@@ -88,6 +89,9 @@ class AdminSettingActivity : AppCompatActivity() {
             }
 
         }
+
+        tv_version_name = findViewById(R.id.tv_version_name)
+        tv_version_name.text = "V ${BuildConfig.VERSION_NAME}"
 
         initDateTime()
         initButtonListener()

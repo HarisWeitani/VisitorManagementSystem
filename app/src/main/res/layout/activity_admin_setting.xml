@@ -134,6 +134,18 @@
                 android:visibility="gone"
                 />
 
+
+            <TextView
+                android:id="@+id/tv_version_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="16dp"
+                android:gravity="bottom"
+
+                android:fontFamily="@font/gotham_book"
+                android:text="Version"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
         </LinearLayout>
 
         <ScrollView

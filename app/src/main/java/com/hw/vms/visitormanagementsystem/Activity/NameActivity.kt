@@ -158,6 +158,12 @@ class NameActivity : AppCompatActivity(), NetworkHelper.NetworkCallback {
     private fun initView(){
         et_name = findViewById(R.id.et_name)
         btn_next = findViewById(R.id.btn_next)
+        iv_logo = findViewById(R.id.iv_logo)
+        iv_logo.setOnLongClickListener {
+            startActivity(Intent(this@NameActivity,
+                AdminLoginActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            true
+        }
 
         btn_next.setOnClickListener {
             if( !et_name.text.isNullOrEmpty() ){
